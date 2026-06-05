@@ -247,7 +247,11 @@ async function initKeys() {
       return;
     }
     const backup = await exportBackup(pass);
-    $('backup-json').value = JSON.stringify(backup);
+    const box = $('backup-json');
+    if (box) {
+      box.value = JSON.stringify(backup);
+      growTextarea(box);
+    }
   });
   $('import-btn')?.addEventListener('click', async () => {
     const pass = $('backup-pass')?.value;
