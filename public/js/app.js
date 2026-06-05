@@ -3,11 +3,19 @@
 import { decryptMessage, encryptMessage } from './crypto.js';
 import { exportBackup, importBackup, loadIdentity } from './keys.js';
 import { consumePayloadFromUrl, payloadToUrl, payloadToUrlQuery } from './payload-url.js';
-import { isValidPublicKeyCompact, publicKeyToUrl } from './pubkey-url.js';
+import {
+  assertPublicKeyCompact,
+  isValidPublicKeyCompact,
+  publicKeyFromPath,
+  publicKeyToUrl,
+} from './pubkey-url.js';
 import { zeroizePayload } from './zeroize.js';
 
 const BASE = document.querySelector('meta[name="base-url"]')?.content?.replace(/\/$/, '') || '';
-const BOOT = window.__VC_BOOT__ || {};
+
+function boot() {
+  return window.__VC_BOOT__ || {};
+}
 
 function $(id) {
   return document.getElementById(id);
@@ -65,7 +73,9 @@ async function initCompose() {
   const params = new URLSearchParams(location.search);
   const toParam = params.get('to');
   if (toParam) fillPeerKey(toParam);
-  if (BOOT.publicKeyCompact) fillPeerKey(BOOT.publicKeyCompact);
+  const fromPath = publicKeyFromPath();
+  if (fromPath) fillPeerKey(fromPath);
+  else if (boot().publicKeyCompact) fillPeerKey(boot().publicKeyCompact);
 
   $('copy-key-link')?.addEventListener('click', () => {
     copyText(buildKeyInvite(keyUrl), $('copy-key-link'));
@@ -185,14 +195,22 @@ async function initPaste() {
   }
 }
 
-function initKey() {
-  const compact = BOOT.publicKeyCompact;
-  if (!compact || !isValidPublicKeyCompact(compact)) {
-    $('key-pubkey').textContent = 'Invalid public key in URL.';
+async function initKey() {
+  const el = $('key-pubkey');
+  const compact = publicKeyFromPath() || boot().publicKeyCompact;
+  if (!compact) {
+    if (el) el.textContent = 'No public key in URL.';
     return;
   }
-  $('key-pubkey').textContent = compact;
-  $('compose-link').href = `${BASE}/?to=${encodeURIComponent(compact)}`;
+  try {
+    await assertPublicKeyCompact(compact);
+  } catch {
+    if (el) el.textContent = 'Invalid public key in URL.';
+    return;
+  }
+  if (el) el.textContent = compact;
+  const link = $('compose-link');
+  if (link) link.href = `${BASE}/?to=${encodeURIComponent(compact)}`;
 }
 
 async function initKeys() {
