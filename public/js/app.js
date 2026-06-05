@@ -55,6 +55,13 @@ function withName(text) {
   return n ? `${n}: ${text}` : text;
 }
 
+function formatOutgoingPaste(linkUrl) {
+  return (
+    withName(linkUrl) +
+    '\n\n---\nEncrypted with Valkcryption. Only the recipient can decrypt in their browser. Ciphertext is in the # part of the link above.'
+  );
+}
+
 function buildKeyInvite(keyUrl) {
   return withName(
     `Let's talk privately via Valkcryption (encrypted in the browser — the site operator can't read messages).
@@ -124,8 +131,7 @@ async function initCompose() {
       return;
     }
     const out = $('output');
-    const footer = `\n\n---\nthis message was encrypted with Valkcryption. Only the intended recipient can decrypt it in their browser. The server never receives this ciphertext (it is in the # part of the URL).\n${msgUrl}`;
-    const full = withName(msgUrl) + footer;
+    const full = formatOutgoingPaste(msgUrl);
     if (out) {
       out.value = full;
       $('result-block')?.classList.remove('hidden');
@@ -173,8 +179,7 @@ async function initPaste() {
       });
       try {
         const msgUrl = payloadToUrl(BASE, payload);
-        const footer = `\n\n---\nthis message was encrypted with Valkcryption. Only the intended recipient can decrypt it in their browser. The server never receives this ciphertext (it is in the # part of the URL).\n${msgUrl}`;
-        const full = withName(msgUrl) + footer;
+        const full = formatOutgoingPaste(msgUrl);
         const out = $('reply-output');
         if (out) {
           out.value = full;
