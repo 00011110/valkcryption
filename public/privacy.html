@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="base-url" content="{{BASE_URL}}">
+  <title>Privacy — Valkcryption</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="privacy">
+<header class="topbar">
+  <span class="brand">Valkcryption</span>
+  <nav>
+    <a href="/">Home</a>
+    <a href="{{GITHUB_URL}}" rel="noopener noreferrer">Source</a>
+  </nav>
+</header>
+<main class="wrap">
+  <h1>Privacy policy</h1>
+  <p class="sub">Last updated: June 4, 2026</p>
+
+  <div class="panel">
+    <h2 style="margin-top:0;font-size:1rem">What we cannot see</h2>
+    <ul>
+      <li>Your private keys — generated and stored in your browser (IndexedDB).</li>
+      <li>Message plaintext — encryption and decryption happen only in your browser.</li>
+      <li>Your optional display name — stored in browser localStorage only.</li>
+    </ul>
+  </div>
+
+  <div class="panel">
+    <h2 style="margin-top:0;font-size:1rem">What we may store</h2>
+    <ul>
+      <li><strong>Messages:</strong> ciphertext is only in the URL fragment (<code>#m=…</code>), which is never sent to our server. We do not store message bodies.</li>
+      <li><strong>Public keys</strong> with short profile IDs (<code>/u/…</code>), typically 90 days.</li>
+      <li><strong>Rate limiting:</strong> we HMAC your IP with a server secret and keep that hash in RAM for at most <strong>5 minutes</strong>. Raw IPs are not written to our database.</li>
+    </ul>
+  </div>
+
+  <div class="panel">
+    <h2 style="margin-top:0;font-size:1rem">What we never store</h2>
+    <ul>
+      <li>Private keys, passphrases, or decrypted message content.</li>
+    </ul>
+  </div>
+
+  <div class="notice">
+    Chat apps and browsers may still log URLs you paste. Use links understanding that metadata leaks to those platforms.
+  </div>
+
+  <div class="panel">
+    <h2 style="margin-top:0;font-size:1rem">Advertising</h2>
+    <p class="sub" style="margin:0">Optional humble footer sponsors may appear (static image/text only, no video). Configured in our open-source <code>ads.json</code>. We do not sell or share your encrypted message content.</p>
+  </div>
+
+  <p class="sub">Abuse reports: <a href="{{GITHUB_URL}}/issues">GitHub issues</a> on the source repository.</p>
+  <button type="button" class="secondary" id="purge-server">About data deletion</button>
+
+  <div class="footer-links"><a href="/contact">Contact</a></div>
+</main>
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>

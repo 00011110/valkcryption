@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="base-url" content="{{BASE_URL}}">
+  <title>Encrypted paste — Valkcryption</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="paste">
+<header class="topbar">
+  <span class="brand">Valkcryption</span>
+  <nav>
+    <a href="/">New paste</a>
+    <a href="/keys">Your keys</a>
+    <a href="{{GITHUB_URL}}" rel="noopener noreferrer">Source</a>
+  </nav>
+</header>
+<main class="wrap">
+  <h1>Encrypted paste</h1>
+  <p class="sub" id="decrypt-status">Decrypting in your browser…</p>
+  <p class="sub" id="paste-expiry"></p>
+
+  <div class="panel">
+    <pre id="decrypted"></pre>
+  </div>
+
+  <div id="key-missing" class="warn hidden">
+    <strong>Cannot decrypt on this device.</strong> Keys live only in the browser that created them. Import a backup from the <a href="/keys">Keys</a> page, or ask the sender to re-encrypt for your current keys.
+  </div>
+
+  <h1 style="margin-top:2rem;font-size:1.1rem">Reply</h1>
+  <label for="name">Your name (optional)</label>
+  <input type="text" id="name" autocomplete="nickname">
+  <input type="hidden" id="peer-key">
+  <label for="reply-plain">Your reply</label>
+  <textarea id="reply-plain"></textarea>
+  <button type="button" id="btn-reply">Encrypt reply link</button>
+
+  <div id="reply-block" class="panel hidden">
+    <textarea id="reply-output" readonly></textarea>
+    <button type="button" id="copy-reply">Copy reply</button>
+  </div>
+
+  <p class="sub" style="margin-top:2rem">this message was encrypted with Valkcryption. Only the intended recipient can decrypt it in their browser.</p>
+
+  <div class="footer-links">
+    <a href="/privacy">Privacy</a>
+  </div>
+</main>
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>
