@@ -1,0 +1,9 @@
+data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+.rate_pepper
+.env
+deploy/
+node_modules/
+.DS_Store
