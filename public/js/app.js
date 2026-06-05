@@ -9,9 +9,21 @@ import {
   publicKeyFromPath,
   publicKeyToUrl,
 } from './pubkey-url.js';
+import { growAllTextareas, growTextarea } from './auto-grow.js';
 import { zeroizePayload } from './zeroize.js';
 
-const BASE = document.querySelector('meta[name="base-url"]')?.content?.replace(/\/$/, '') || '';
+const BASE =
+  (typeof location !== 'undefined' && location.origin) ||
+  document.querySelector('meta[name="base-url"]')?.content?.replace(/\/$/, '') ||
+  '';
+
+function cryptoUnavailableMessage() {
+  const port = location.port || '8443';
+  if (location.hostname === '0.0.0.0') {
+    return `Web Crypto is blocked on 0.0.0.0. Open http://127.0.0.1:${port} instead.`;
+  }
+  return `Could not access Web Crypto. Open http://127.0.0.1:${port} (not IP-only HTTP).`;
+}
 
 function boot() {
   return window.__VC_BOOT__ || {};
@@ -62,13 +74,21 @@ function fillPeerKey(compact) {
 }
 
 async function initCompose() {
-  const identity = await loadIdentity();
   const pubEl = $('my-pubkey');
   const linkEl = $('my-link');
-  const keyUrl = publicKeyToUrl(BASE, identity.compact);
-
-  if (pubEl) pubEl.textContent = identity.compact;
-  if (linkEl) linkEl.textContent = keyUrl;
+  let identity;
+  let keyUrl;
+  try {
+    if (!globalThis.crypto?.subtle) throw new Error('no subtle');
+    identity = await loadIdentity();
+    keyUrl = publicKeyToUrl(BASE, identity.compact);
+    if (pubEl) pubEl.textContent = identity.compact;
+    if (linkEl) linkEl.textContent = keyUrl;
+  } catch {
+    if (pubEl) pubEl.textContent = cryptoUnavailableMessage();
+    if (linkEl) linkEl.textContent = '—';
+    return;
+  }
 
   const params = new URLSearchParams(location.search);
   const toParam = params.get('to');
@@ -106,8 +126,11 @@ async function initCompose() {
     const out = $('output');
     const footer = `\n\n---\nthis message was encrypted with Valkcryption. Only the intended recipient can decrypt it in their browser. The server never receives this ciphertext (it is in the # part of the URL).\n${msgUrl}`;
     const full = withName(msgUrl) + footer;
-    if (out) out.value = full;
-    $('result-block')?.classList.remove('hidden');
+    if (out) {
+      out.value = full;
+      $('result-block')?.classList.remove('hidden');
+      growTextarea(out);
+    }
   });
 
   $('copy-output')?.addEventListener('click', () => {
@@ -153,8 +176,11 @@ async function initPaste() {
         const footer = `\n\n---\nthis message was encrypted with Valkcryption. Only the intended recipient can decrypt it in their browser. The server never receives this ciphertext (it is in the # part of the URL).\n${msgUrl}`;
         const full = withName(msgUrl) + footer;
         const out = $('reply-output');
-        if (out) out.value = full;
-        $('reply-block')?.classList.remove('hidden');
+        if (out) {
+          out.value = full;
+          $('reply-block')?.classList.remove('hidden');
+          growTextarea(out);
+        }
       } catch (e) {
         alert(e.message || 'Link too long');
       }
@@ -253,9 +279,10 @@ function initPrivacy() {
 loadName();
 initPgp();
 initPrivacy();
+growAllTextareas();
 
 const page = document.body.dataset.page;
-if (page === 'compose') initCompose();
-if (page === 'paste') initPaste();
-if (page === 'key') initKey();
+if (page === 'compose') initCompose().catch(() => {});
+if (page === 'paste') initPaste().catch(() => {});
+if (page === 'key') initKey().catch(() => {});
 if (page === 'keys') initKeys();

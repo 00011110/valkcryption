@@ -46,7 +46,7 @@ h1 { font-size: 1.35rem; margin: 0 0 0.5rem; font-weight: 600; }
 
 label { display: block; color: var(--muted); margin: 1rem 0 0.35rem; font-size: 0.8rem; }
 
-input[type="text"], input[type="password"], textarea {
+input[type="text"], input[type="password"] {
   width: 100%;
   background: #12151a;
   border: 1px solid var(--border);
@@ -54,10 +54,22 @@ input[type="text"], input[type="password"], textarea {
   padding: 0.7rem;
   border-radius: 4px;
   font: inherit;
-  resize: vertical;
 }
 
-textarea { min-height: 140px; }
+textarea {
+  width: 100%;
+  display: block;
+  background: #12151a;
+  border: 1px solid var(--border);
+  color: var(--fg);
+  padding: 0.7rem;
+  border-radius: 4px;
+  font: inherit;
+  min-height: 4.5rem;
+  resize: none;
+  overflow: hidden;
+  field-sizing: content;
+}
 
 button, .btn {
   background: var(--accent-dim);
@@ -106,6 +118,11 @@ button.secondary { background: transparent; color: var(--accent); border: 1px so
 }
 
 .hidden { display: none !important; }
+
+.panel,
+.wrap {
+  overflow: visible;
+}
 
 #decrypted {
   white-space: pre-wrap;
