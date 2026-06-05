@@ -32,8 +32,7 @@
     <h2 style="margin-top:0;font-size:1rem">What we may store</h2>
     <ul>
       <li><strong>Messages:</strong> ciphertext is only in the URL fragment (<code>#m=…</code>), which is never sent to our server. We do not store message bodies.</li>
-      <li><strong>Public keys</strong> with short profile IDs (<code>/u/…</code>), typically 90 days.</li>
-      <li><strong>Rate limiting:</strong> we HMAC your IP with a server secret and keep that hash in RAM for at most <strong>5 minutes</strong>. Raw IPs are not written to our database.</li>
+      <li><strong>Public keys:</strong> included in share URLs (<code>/k/…</code>) you send — not stored in a server database by default.</li>
     </ul>
   </div>
 
@@ -53,7 +52,7 @@
     <p class="sub" style="margin:0">Optional humble footer sponsors may appear (static image/text only, no video). Configured in our open-source <code>ads.json</code>. We do not sell or share your encrypted message content.</p>
   </div>
 
-  <p class="sub">Abuse reports: <a href="{{GITHUB_URL}}/issues">GitHub issues</a> on the source repository.</p>
+  <p class="sub">Abuse reports: <a href="mailto:xrow123@gmail.com">xrow123@gmail.com</a></p>
   <button type="button" class="secondary" id="purge-server">About data deletion</button>
 
   <div class="footer-links"><a href="/contact">Contact</a></div>

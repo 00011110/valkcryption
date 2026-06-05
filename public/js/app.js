@@ -3,6 +3,7 @@
 import { decryptMessage, encryptMessage } from './crypto.js';
 import { exportBackup, importBackup, loadIdentity } from './keys.js';
 import { consumePayloadFromUrl, payloadToUrl, payloadToUrlQuery } from './payload-url.js';
+import { isValidPublicKeyCompact, publicKeyToUrl } from './pubkey-url.js';
 import { zeroizePayload } from './zeroize.js';
 
 const BASE = document.querySelector('meta[name="base-url"]')?.content?.replace(/\/$/, '') || '';
@@ -22,25 +23,6 @@ function copyText(text, btn) {
   });
 }
 
-function fmtExpiry(ms) {
-  if (ms <= 0) return 'expired';
-  const s = Math.floor(ms / 1000);
-  const d = Math.floor(s / 86400);
-  const h = Math.floor((s % 86400) / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sec = s % 60;
-  return `${d ? `${d}d ` : ''}${h}h ${m}m ${sec}s`;
-}
-
-function tickExpiry(el, expiresAt) {
-  if (!el || !expiresAt) return;
-  const tick = () => {
-    el.textContent = `Expires in ${fmtExpiry(expiresAt - Date.now())}`;
-  };
-  tick();
-  setInterval(tick, 1000);
-}
-
 function loadName() {
   const input = $('name');
   if (!input) return;
@@ -53,60 +35,12 @@ function withName(text) {
   return n ? `${n}: ${text}` : text;
 }
 
-async function registerShortId(identity) {
-  let shortId = localStorage.getItem('vc_short_id');
-  if (!shortId) {
-    shortId = randomShortId();
-  }
-  const res = await fetch(`${BASE}/api/u`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      shortId,
-      publicKeyCompact: identity.compact,
-      publicKeyHash: identity.publicKeyHash,
-    }),
-  });
-  const data = await res.json();
-  if (res.status === 409) {
-    for (let i = 0; i < 5; i++) {
-      shortId = randomShortId();
-      const retry = await fetch(`${BASE}/api/u`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          shortId,
-          publicKeyCompact: identity.compact,
-          publicKeyHash: identity.publicKeyHash,
-        }),
-      });
-      const rd = await retry.json();
-      if (retry.ok) {
-        localStorage.setItem('vc_short_id', rd.shortId);
-        return rd;
-      }
-    }
-    throw new Error('could not register profile id');
-  }
-  if (!res.ok) throw new Error(data.error || 'register failed');
-  localStorage.setItem('vc_short_id', data.shortId);
-  return data;
-}
-
-function randomShortId() {
-  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  let s = '';
-  const arr = crypto.getRandomValues(new Uint8Array(8));
-  for (let i = 0; i < 8; i++) s += chars[arr[i] % chars.length];
-  return s;
-}
-
-function buildProfileInvite(profileUrl) {
+function buildKeyInvite(keyUrl) {
   return withName(
     `Let's talk privately via Valkcryption (encrypted in the browser — the site operator can't read messages).
 
 1) Open this link in Chrome/Firefox/Safari (not an in-app preview if you can avoid it):
-${profileUrl}
+${keyUrl}
 
 2) Write your message and send me back the encrypted link it gives you.
 
@@ -114,36 +48,34 @@ My messages only decrypt in my browser; back up keys if you switch devices.`
   );
 }
 
+function fillPeerKey(compact) {
+  const peerInput = $('peer-key');
+  if (peerInput && isValidPublicKeyCompact(compact)) peerInput.value = compact;
+}
+
 async function initCompose() {
   const identity = await loadIdentity();
   const pubEl = $('my-pubkey');
   const linkEl = $('my-link');
-  const reg = await registerShortId(identity);
-  const profileUrl = `${BASE}/u/${reg.shortId}`;
+  const keyUrl = publicKeyToUrl(BASE, identity.compact);
 
   if (pubEl) pubEl.textContent = identity.compact;
-  if (linkEl) linkEl.textContent = profileUrl;
+  if (linkEl) linkEl.textContent = keyUrl;
 
   const params = new URLSearchParams(location.search);
   const toParam = params.get('to');
-  const peerInput = $('peer-key');
-  if (toParam && peerInput) peerInput.value = toParam;
+  if (toParam) fillPeerKey(toParam);
+  if (BOOT.publicKeyCompact) fillPeerKey(BOOT.publicKeyCompact);
 
-  if (BOOT.shortId) {
-    const r = await fetch(`${BASE}/api/u/${BOOT.shortId}`);
-    const data = await r.json();
-    if (r.ok && peerInput) peerInput.value = data.publicKeyCompact;
-  }
-
-  $('copy-profile')?.addEventListener('click', () => {
-    copyText(buildProfileInvite(profileUrl), $('copy-profile'));
+  $('copy-key-link')?.addEventListener('click', () => {
+    copyText(buildKeyInvite(keyUrl), $('copy-key-link'));
   });
 
   $('btn-create')?.addEventListener('click', async () => {
     const peer = $('peer-key')?.value.trim();
     const plain = $('plaintext')?.value || '';
-    if (!peer) {
-      alert('Paste the recipient public key or open their /u/ link first.');
+    if (!peer || !isValidPublicKeyCompact(peer)) {
+      alert('Paste a valid recipient public key or open their /k/… link first.');
       return;
     }
     if (!plain) {
@@ -243,7 +175,7 @@ async function initPaste() {
     zeroizePayload(payload);
     if (plainEl) plainEl.textContent = plain;
     senderCompact = payload.s;
-    if ($('peer-key')) $('peer-key').value = senderCompact;
+    fillPeerKey(senderCompact);
     setupReply();
   } catch {
     if (status) status.textContent = 'Cannot decrypt — wrong device, cleared keys, or corrupted link.';
@@ -253,17 +185,14 @@ async function initPaste() {
   }
 }
 
-async function initUser() {
-  const shortId = BOOT.shortId;
-  const res = await fetch(`${BASE}/api/u/${shortId}`);
-  const data = await res.json();
-  if (!res.ok) {
-    $('user-status').textContent = 'Profile not found or expired.';
+function initKey() {
+  const compact = BOOT.publicKeyCompact;
+  if (!compact || !isValidPublicKeyCompact(compact)) {
+    $('key-pubkey').textContent = 'Invalid public key in URL.';
     return;
   }
-  $('user-pubkey').textContent = data.publicKeyCompact;
-  tickExpiry($('user-expiry'), data.expiresAt);
-  $('compose-link').href = `${BASE}/?to=${encodeURIComponent(data.publicKeyCompact)}`;
+  $('key-pubkey').textContent = compact;
+  $('compose-link').href = `${BASE}/?to=${encodeURIComponent(compact)}`;
 }
 
 async function initKeys() {
@@ -288,19 +217,27 @@ async function initKeys() {
   });
 }
 
+function initPgp() {
+  $('pgp-toggle')?.addEventListener('click', () => {
+    const b = $('pgp-block');
+    if (b) b.style.display = b.style.display === 'block' ? 'none' : 'block';
+  });
+}
+
 function initPrivacy() {
   $('purge-server')?.addEventListener('click', () => {
     alert(
-      'Default message links keep ciphertext in the URL hash only (not on server). Your private keys live only in this browser — use Keys page to export a backup before clearing site data.'
+      'Message links keep ciphertext in the URL hash only (not on server). Your private keys live only in this browser — use Keys page to export a backup before clearing site data.'
     );
   });
 }
 
 loadName();
+initPgp();
 initPrivacy();
 
 const page = document.body.dataset.page;
 if (page === 'compose') initCompose();
 if (page === 'paste') initPaste();
-if (page === 'user') initUser();
+if (page === 'key') initKey();
 if (page === 'keys') initKeys();

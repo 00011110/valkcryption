@@ -1,6 +1,6 @@
 'use strict';
 
-import { generateKeyPair, importPrivateJwk, publicKeyHash } from './crypto.js';
+import { generateKeyPair, importPrivateJwk } from './crypto.js';
 
 const DB_NAME = 'valkcryption';
 const STORE = 'keys';
@@ -43,17 +43,15 @@ export async function loadIdentity() {
     return {
       compact: record.compact,
       privJwk: record.privJwk,
-      publicKeyHash: record.publicKeyHash,
       privateKey,
       publicKey: null,
       createdAt: record.createdAt,
     };
   }
   const { compact, privJwk, privateKey, publicKey } = await generateKeyPair();
-  const hash = await publicKeyHash(compact);
-  record = { compact, privJwk, publicKeyHash: hash, createdAt: Date.now() };
+  record = { compact, privJwk, createdAt: Date.now() };
   await idbSet('identity', record);
-  return { compact, privJwk, publicKeyHash: hash, privateKey, publicKey, createdAt: record.createdAt };
+  return { compact, privJwk, privateKey, publicKey, createdAt: record.createdAt };
 }
 
 export async function replaceIdentity(record) {

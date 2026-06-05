@@ -1,17 +1,7 @@
 /* global crypto */
 'use strict';
 
-const VC_DOMAIN = new TextEncoder().encode('valkcryption|msg|v1');
-
-export function publicKeyHash(compact) {
-  // eslint-disable-next-line no-undef
-  return crypto.subtle.digest('SHA-256', new TextEncoder().encode(compact)).then((buf) =>
-    Array.from(new Uint8Array(buf))
-      .map((b) => b.toString(16).padStart(2, '0'))
-      .join('')
-      .slice(0, 16)
-  );
-}
+const VC_DOMAIN = new TextEncoder().encode('valkcryption.it|msg|v1');
 
 export async function generateKeyPair() {
   const pair = await crypto.subtle.generateKey({ name: 'X25519' }, true, ['deriveKey', 'deriveBits']);
