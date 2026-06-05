@@ -3,8 +3,8 @@
 Pastebin-style **true end-to-end** encrypted links for chatting over Discord, email, SMS, etc.
 
 - Keys: generated in the browser (X25519), stored in IndexedDB
-- Server: **does not receive message ciphertext** (it lives in `#m=…` in the link). Public profile IDs only.
-- Zero npm dependencies — Node.js 22+ (built-in SQLite)
+- Server: **stateless** — no database. Message ciphertext lives in `#m=…`; public keys live in share URLs (`/k/…`)
+- Zero npm dependencies — Node.js 18+ (no SQLite required)
 
 ## Quick start (local)
 
@@ -18,7 +18,7 @@ Open `http://127.0.0.1:8443/`.
 
 ## Flow
 
-1. Open `/` — your profile link appears (`/u/xxxxxxxx`)
+1. Open `/` — copy your share link (`/k/{yourPublicKey}`)
 2. Send that link to someone (one time)
 3. They open it → write a message → copy `https://your-host/p/…#m=…`
 4. You open the paste link in the **same browser** where your keys live → decrypt → reply

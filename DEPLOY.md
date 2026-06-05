@@ -1,6 +1,6 @@
 # Deploying Valkcryption
 
-No npm install step. Requires **Node.js 22+** (built-in SQLite).
+No npm install step. Requires **Node.js 18+**. The app is **stateless** (no database).
 
 ## Environment
 
@@ -10,17 +10,13 @@ Copy `.env.example` and set at least:
 |----------|---------|
 | `BASE_URL` | Public HTTPS origin (no trailing slash), e.g. `https://paste.example.com` |
 | `GITHUB_URL` | Repository URL for the “Source” footer link |
-| `DATA_DIR` | Writable directory for SQLite + rate-limit pepper |
 | `PORT` / `HOST` | Listen address (often `127.0.0.1` behind a reverse proxy) |
-| `TRUST_PROXY` | Set `1` when behind nginx/Caddy so rate limits see client IPs |
 
 ```bash
 export BASE_URL=https://paste.example.com
 export GITHUB_URL=https://github.com/you/valkcryption
-export DATA_DIR=./data
 export PORT=8443
 export HOST=127.0.0.1
-export TRUST_PROXY=1
 node server.js
 ```
 
@@ -43,7 +39,7 @@ paste.example.com {
 }
 ```
 
-**systemd (example)** — adjust paths and user to your layout:
+**systemd (example)**
 
 ```ini
 [Unit]
@@ -69,5 +65,5 @@ Prefer `#m=` links (fragments are not sent to the server). If users must use `?m
 
 ## Verify
 
-- Create a profile link, send a message, open the paste URL in the recipient browser — decrypt works.
+- Copy your `/k/…` share link, send a message, open the paste URL in the recipient browser — decrypt works.
 - Same link in a private window without key backup — decrypt should fail.

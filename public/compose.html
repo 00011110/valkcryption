@@ -27,18 +27,18 @@
   </div>
 
   <div class="panel">
-    <div class="sub">Your public key (share via profile link)</div>
+    <div class="sub">Your public key</div>
     <code class="pubkey" id="my-pubkey">generating…</code>
-    <div class="sub" style="margin-top:0.5rem">Profile link</div>
+    <div class="sub" style="margin-top:0.5rem">Share link (public key in URL)</div>
     <code class="pubkey" id="my-link">…</code>
-    <button type="button" class="secondary" id="copy-profile">Copy profile invite</button>
+    <button type="button" class="secondary" id="copy-key-link">Copy invite link</button>
   </div>
 
   <label for="name">Display name (optional, stored only in this browser)</label>
   <input type="text" id="name" autocomplete="nickname" placeholder="Alex">
 
   <label for="peer-key">Recipient public key</label>
-  <input type="text" id="peer-key" placeholder="Paste their key, or open their /u/… link first">
+  <input type="text" id="peer-key" placeholder="Paste their key, or open their /k/… link">
 
   <label for="plaintext">Message</label>
   <textarea id="plaintext" placeholder="Write your private message…"></textarea>

@@ -32,8 +32,7 @@
     <h2 style="margin-top:0;font-size:1rem">What we may store</h2>
     <ul>
       <li><strong>Messages:</strong> ciphertext is only in the URL fragment (<code>#m=…</code>), which is never sent to our server. We do not store message bodies.</li>
-      <li><strong>Public keys</strong> with short profile IDs (<code>/u/…</code>), typically 90 days.</li>
-      <li><strong>Rate limiting:</strong> we HMAC your IP with a server secret and keep that hash in RAM for at most <strong>5 minutes</strong>. Raw IPs are not written to our database.</li>
+      <li><strong>Public keys:</strong> included in share URLs (<code>/k/…</code>) you send — not stored in a server database by default.</li>
     </ul>
   </div>
 
