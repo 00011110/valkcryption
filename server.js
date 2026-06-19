@@ -10,7 +10,7 @@ const { zeroizeString } = require('./lib/zeroize');
 const ROOT = __dirname;
 const PORT = Number(process.env.PORT || 8443);
 const HOST = process.env.HOST || '0.0.0.0';
-const BASE_URL = (process.env.BASE_URL || 'https://valkcryption.it').replace(/\/$/, '');
+const BASE_URL = (process.env.BASE_URL || 'https://valkcryption.com').replace(/\/$/, '');
 const GITHUB_URL = (process.env.GITHUB_URL || 'https://github.com/00011110/valkcryption').replace(/\/$/, '');
 
 const PUBKEY_COMPACT_RE = /^[A-Za-z0-9_-]{40,48}$/;
