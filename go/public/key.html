@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="base-url" content="{{BASE_URL}}">
+  <title>Public key — Valkcryption</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="key">
+<header class="topbar">
+  <span class="brand">Valkcryption</span>
+  <nav>
+    <a href="/">New paste</a>
+    <a href="{{GITHUB_URL}}" rel="noopener noreferrer">Source</a>
+  </nav>
+</header>
+<main class="wrap">
+  <h1>Send to this public key</h1>
+  <p class="sub">The full key is in the URL. Nothing is stored on the server.</p>
+  <div class="panel">
+    <div class="sub">Public key</div>
+    <code class="pubkey" id="key-pubkey"></code>
+  </div>
+  <a class="btn" id="compose-link" href="/">Write encrypted message</a>
+  <div class="footer-links"><a href="/privacy">Privacy</a></div>
+</main>
+<script>window.__VC_BOOT__ = {{PAGE_BOOT}};</script>
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>
