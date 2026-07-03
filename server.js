@@ -40,9 +40,16 @@ function loadTemplate(name) {
   return fs.readFileSync(path.join(ROOT, 'public', name), 'utf8');
 }
 
-function injectPage(template, vars) {
+function pageBaseUrl(req) {
+  const host = req.headers.host;
+  if (!host) return BASE_URL;
+  const proto = req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+  return `${proto}://${host}`.replace(/\/$/, '');
+}
+
+function injectPage(template, vars, pageBase = BASE_URL) {
   let html = template;
-  const all = { BASE_URL, GITHUB_URL, AD_FOOTER, ...vars };
+  const all = { BASE_URL: pageBase, GITHUB_URL, AD_FOOTER, ...vars };
   for (const [k, v] of Object.entries(all)) {
     html = html.split(`{{${k}}}`).join(String(v ?? ''));
   }
@@ -80,12 +87,21 @@ function wipeQueryCiphertext(url) {
   return true;
 }
 
-function renderPage(file, extra = {}) {
-  return injectPage(loadTemplate(file), extra);
+function renderPage(file, extra = {}, pageBase = BASE_URL) {
+  return injectPage(loadTemplate(file), extra, pageBase);
 }
 
 const server = http.createServer(async (req, res) => {
-  const url = new URL(req.url, BASE_URL);
+  const host = req.headers.host || '';
+  if (host.startsWith('0.0.0.0')) {
+    const port = host.includes(':') ? host.split(':')[1] : String(PORT);
+    const dest = new URL(req.url, `http://127.0.0.1:${port}`);
+    res.writeHead(302, { Location: dest.href });
+    return res.end();
+  }
+
+  const pageBase = pageBaseUrl(req);
+  const url = new URL(req.url, pageBase);
   try {
     if (
       url.pathname.startsWith('/css/') ||
@@ -97,7 +113,7 @@ const server = http.createServer(async (req, res) => {
 
     if (url.pathname === '/p' || url.pathname === '/p/') {
       if (url.searchParams.has('m')) wipeQueryCiphertext(url);
-      return sendHtml(res, 200, renderPage('paste.html'));
+      return sendHtml(res, 200, renderPage('paste.html', {}, pageBase));
     }
 
     const keyMatch = url.pathname.match(/^\/k\/([A-Za-z0-9_-]+)$/);
@@ -105,7 +121,7 @@ const server = http.createServer(async (req, res) => {
       return sendHtml(
         res,
         200,
-        renderPage('key.html', { PAGE_BOOT: JSON.stringify({ publicKeyCompact: keyMatch[1] }) })
+        renderPage('key.html', { PAGE_BOOT: JSON.stringify({ publicKeyCompact: keyMatch[1] }) }, pageBase)
       );
     }
 
@@ -116,7 +132,7 @@ const server = http.createServer(async (req, res) => {
       '/keys': 'keys.html',
     };
     if (routes[url.pathname]) {
-      return sendHtml(res, 200, renderPage(routes[url.pathname], { PAGE_BOOT: '{}' }));
+      return sendHtml(res, 200, renderPage(routes[url.pathname], { PAGE_BOOT: '{}' }, pageBase));
     }
 
     res.writeHead(404);
