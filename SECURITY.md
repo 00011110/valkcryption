@@ -20,7 +20,7 @@
 
 ## Cryptographic context string
 
-Message AEAD uses the fixed domain separator `valkcryption|msg|v1` (see `public/js/crypto.js`). **Do not change it** on a live instance — existing links would fail to decrypt.
+Message AEAD uses the fixed domain separator `valkcryption.com|msg|v1` (see `public/js/crypto.js`). **Do not change it** on a live instance — existing links would fail to decrypt. Changing the domain string (e.g. back to the valkcryption.it value) is required to decrypt messages created with a different version.
 
 ## Limits
 
