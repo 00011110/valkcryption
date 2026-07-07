@@ -7,7 +7,29 @@ Pastebin-style **true end-to-end** encrypted links for chatting over Discord, em
 - Zero npm dependencies — Node.js 18+ (no SQLite required)
 
 > **Note:** As of the July 7 2026 update, Valkcryption uses `valkcryption.com|msg|v2`. Links encrypted before July 7 2026 (with v1 or earlier) cannot be decrypted here.
-> To access old encrypted chats you must self-host the previous version of the code yourself.
+> To access old encrypted chats you must self-host the previous version yourself (see below).
+
+### Getting the previous version (to decrypt old links)
+
+```bash
+git clone https://github.com/00011110/valkcryption.git
+cd valkcryption
+git checkout v1
+```
+
+Or download a ZIP of the exact old version:
+
+https://github.com/00011110/valkcryption/archive/v1.zip
+
+Then run it locally with your own `BASE_URL`:
+
+```bash
+cp deploy/valkcryption.env.example .env
+# edit .env (set BASE_URL to your local or self-hosted URL)
+node server.js
+```
+
+The tag `v1` points to the last commit using `valkcryption.com|msg|v1`.
 
 ## Quick start (local)
 

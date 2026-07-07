@@ -27,8 +27,26 @@
 
   <div class="panel">
     <p>Because the encryption key derivation incorporates a versioned domain string (currently <code>valkcryption.com|msg|v2</code>), links created with previous versions of the code (pre-July 7 2026) cannot be decrypted on the current hosted site at valkcryption.com.</p>
-    <p>To decrypt such links, you'll have to locally host the previous update yourself.</p>
-    <p>Clone the repo from GitHub, checkout the state of the code from before this update (or the last version using the prior context string), set your BASE_URL, and run the server locally. Your browser keys from that era should then work for decryption of those older links.</p>
+    <p>To decrypt such links, you'll have to locally host the previous version yourself.</p>
+  </div>
+
+  <div class="panel">
+    <h2 style="margin-top:0;font-size:1rem">How to get &amp; run the old version</h2>
+
+    <p><strong>Using git (recommended):</strong></p>
+    <pre><code>git clone https://github.com/00011110/valkcryption.git
+cd valkcryption
+git checkout v1</code></pre>
+
+    <p><strong>Or download a ZIP directly:</strong></p>
+    <p><a href="https://github.com/00011110/valkcryption/archive/v1.zip">https://github.com/00011110/valkcryption/archive/v1.zip</a></p>
+
+    <p>Then start it locally:</p>
+    <pre><code>cp deploy/valkcryption.env.example .env
+# Edit .env and set your own BASE_URL (e.g. http://127.0.0.1:8443)
+node server.js</code></pre>
+
+    <p class="sub">The <code>v1</code> tag / commit uses <code>valkcryption.com|msg|v1</code> and can decrypt links created before the July 7 2026 update.</p>
   </div>
 
   <div class="panel">
