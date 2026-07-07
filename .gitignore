@@ -7,3 +7,9 @@ data/
 deploy/
 node_modules/
 .DS_Store
+
+# Compiled binaries (especially the cross-compiled OpenWRT one)
+valkcryption-go
+go/valkcryption-go
+*.exe
+bin/
