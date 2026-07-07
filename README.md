@@ -6,10 +6,12 @@ Pastebin-style **true end-to-end** encrypted links for chatting over Discord, em
 - Server: **stateless** — no database. Message ciphertext lives in `#m=…`; public keys live in share URLs (`/k/…`)
 - Zero npm dependencies — Node.js 18+ (no SQLite required)
 
-> **Note:** As of the July 7 2026 update, Valkcryption uses `valkcryption.com|msg|v2`. Links encrypted before July 7 2026 (with v1 or earlier) cannot be decrypted here.
+> **Note:** As of the July 7 2026 update, Valkcryption uses `valkcryption.com|msg|v2`. Links encrypted before July 7 2026 cannot be decrypted here.
 > To access old encrypted chats you must self-host the previous version yourself (see below).
 
 ### Getting the previous version (to decrypt old links)
+
+The old version uses `valkcryption.it|msg|v1`.
 
 ```bash
 git clone https://github.com/00011110/valkcryption.git
@@ -17,19 +19,19 @@ cd valkcryption
 git checkout v1
 ```
 
-Or download a ZIP of the exact old version:
+Download ZIP from the release (easiest): https://github.com/00011110/valkcryption/releases/tag/v1
 
-https://github.com/00011110/valkcryption/archive/v1.zip
+Or direct archive: https://github.com/00011110/valkcryption/archive/v1.zip
 
-Then run it locally with your own `BASE_URL`:
+Then:
 
 ```bash
 cp deploy/valkcryption.env.example .env
-# edit .env (set BASE_URL to your local or self-hosted URL)
+# edit .env with your BASE_URL
 node server.js
 ```
 
-The tag `v1` points to the last commit using `valkcryption.com|msg|v1`.
+This is the version before the update that removed .it references and replaced them with .com (plus the v2 bump).
 
 ## Quick start (local)
 
