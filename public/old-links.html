@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="base-url" content="{{BASE_URL}}">
+  <title>Links wont decrypt? — Valkcryption</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="old-links">
+<header class="topbar">
+  <span class="brand">Valkcryption</span>
+  <nav>
+    <a href="/">New paste</a>
+    <a href="/keys">Your keys</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/contact">Contact</a>
+    <a href="{{GITHUB_URL}}" rel="noopener noreferrer">Source</a>
+  </nav>
+</header>
+<main class="wrap">
+  <h1>Links wont decrypt?</h1>
+
+  <div class="notice">
+    <strong>Important:</strong> Links encrypted before July 7 2026 won't be decryptable on the site.
+  </div>
+
+  <div class="panel">
+    <p>Because the encryption key derivation incorporates a versioned domain string (currently <code>valkcryption.com|msg|v2</code>), links created with previous versions of the code (pre-July 7 2026) cannot be decrypted on the current hosted site at valkcryption.com.</p>
+    <p>To decrypt such links, you'll have to locally host the previous update yourself.</p>
+    <p>Clone the repo from GitHub, checkout the state of the code from before this update (or the last version using the prior context string), set your BASE_URL, and run the server locally. Your browser keys from that era should then work for decryption of those older links.</p>
+  </div>
+
+  <div class="panel">
+    <h2 style="margin-top:0;font-size:1rem">Why did this happen?</h2>
+    <p class="sub">The domain separator is mixed into the key derivation for message encryption (X25519 + HKDF + AES-GCM). This binds the ciphertext to a specific deployment/version and prevents certain cross-site attacks or config drift issues. When we update it, old ciphertexts become unreadable without the matching old code.</p>
+  </div>
+
+  <p class="sub">Self-hosting is fully supported — see DEPLOY.md and the open source repo. No accounts or data on our servers.</p>
+
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="/privacy">Privacy</a>
+    <a href="{{GITHUB_URL}}">Source</a>
+  </div>
+</main>
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>

@@ -130,6 +130,7 @@ const server = http.createServer(async (req, res) => {
       '/privacy': 'privacy.html',
       '/contact': 'contact.html',
       '/keys': 'keys.html',
+      '/old-links': 'old-links.html',
     };
     if (routes[url.pathname]) {
       return sendHtml(res, 200, renderPage(routes[url.pathname], { PAGE_BOOT: '{}' }, pageBase));

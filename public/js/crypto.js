@@ -1,7 +1,7 @@
 /* global crypto */
 'use strict';
 
-const VC_DOMAIN = new TextEncoder().encode('valkcryption.com|msg|v1');
+const VC_DOMAIN = new TextEncoder().encode('valkcryption.com|msg|v2');
 
 export async function generateKeyPair() {
   const pair = await crypto.subtle.generateKey({ name: 'X25519' }, true, ['deriveKey', 'deriveBits']);

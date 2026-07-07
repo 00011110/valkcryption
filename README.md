@@ -6,9 +6,8 @@ Pastebin-style **true end-to-end** encrypted links for chatting over Discord, em
 - Server: **stateless** — no database. Message ciphertext lives in `#m=…`; public keys live in share URLs (`/k/…`)
 - Zero npm dependencies — Node.js 18+ (no SQLite required)
 
-> **Note:** Valkcryption has moved from valkcryption.it to valkcryption.com.
-> Because the message encryption key derivation incorporates the domain (`valkcryption.com|msg|v1`), **previously encrypted chats and messages created on the old version cannot be decrypted here**.
-> To access old encrypted chats you must self-host the previous version of the code (the version using `valkcryption.it|msg|v1`).
+> **Note:** As of the July 7 2026 update, Valkcryption uses `valkcryption.com|msg|v2`. Links encrypted before July 7 2026 (with v1 or earlier) cannot be decrypted here.
+> To access old encrypted chats you must self-host the previous version of the code yourself.
 
 ## Quick start (local)
 
