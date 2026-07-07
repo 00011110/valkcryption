@@ -16,7 +16,7 @@ import (
 var publicFS embed.FS
 
 var (
-	baseURL   = getEnv("BASE_URL", "http://localhost:8443")
+	baseURL   = getEnv("BASE_URL", "https://valkcryption.com")
 	gitHubURL = getEnv("GITHUB_URL", "https://github.com/00011110/valkcryption")
 	port      = getEnv("PORT", "8443")
 	host      = getEnv("HOST", "127.0.0.1")
@@ -49,6 +49,7 @@ func main() {
 	mux.HandleFunc("/keys", handleStaticPage("keys.html"))
 	mux.HandleFunc("/privacy", handleStaticPage("privacy.html"))
 	mux.HandleFunc("/contact", handleStaticPage("contact.html"))
+	mux.HandleFunc("/old-links", handleStaticPage("old-links.html"))
 
 	addr := fmt.Sprintf("%s:%s", host, port)
 	log.Printf("Valkcryption (Go) listening on %s", addr)
