@@ -30,12 +30,13 @@ This canary covers the Valkcryption project, GitHub repository, www.valkcryption
 
 — valkyrie (00011110), maintainer & domain owner
 
-PGP pubkey (future iterations will be signed):
+PGP pubkey (also available as [`2026-08-22-canary-OLD.asc`](2026-08-22-canary-OLD.asc) in this folder):
+```text
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Comment: User ID:	valk (00011110) <00011110@valkcryption.com>
 Comment: Valid from:	7/22/2026 1:57 PM
 Comment: Valid until:	7/22/2042 12:00 PM
-Comment: Type:	255-bit EdDSA (secret key available)
+Comment: Type:	255-bit EdDSA
 Comment: Usage:	Signing, Encryption, Certifying User IDs
 Comment: Fingerprint:	3886 F99F 6DDD E700 7E38  3F4F CF32 7F2B 6A03 A323
 
@@ -53,3 +54,4 @@ AA5tYW51MiwyLjUrMS4xMiwyLDECGwwFCR4YYooACgkQzzJ/K2oDoyPJSAD/a+1c
 PjFtl2SxlUdK3Lbqu98F
 =PaEe
 -----END PGP PUBLIC KEY BLOCK-----
+```
