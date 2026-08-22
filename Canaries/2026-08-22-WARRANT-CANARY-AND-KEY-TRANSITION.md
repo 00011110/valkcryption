@@ -98,8 +98,12 @@ Both must be good. Canary-New proves control of the new secret. Canary-Old's sig
 
 ## Public keys
 
+For clean copy/paste, use the raw files [`2026-08-22-canary-OLD.asc`](2026-08-22-canary-OLD.asc) and [`2026-08-22-canary-NEW.asc`](2026-08-22-canary-NEW.asc) in this folder.
+
+
 ### Canary-Old (July 2026; retired for future monthly canaries)
 
+```text
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Comment: User ID:	valk (00011110) <00011110@valkcryption.com>
 Comment: Valid from:	7/22/2026 1:57 PM
@@ -122,9 +126,11 @@ AA5tYW51MiwyLjUrMS4xMiwyLDECGwwFCR4YYooACgkQzzJ/K2oDoyPJSAD/a+1c
 PjFtl2SxlUdK3Lbqu98F
 =PaEe
 -----END PGP PUBLIC KEY BLOCK-----
+```
 
 ### Canary-New (current going forward) — valk / valkyrie (00011110)
 
+```text
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Comment: User ID: valk (00011110 canary-20260822T071258Z) <00011110@valkcryption.com>
 Comment: Also known as / operator: valkyrie (00011110)
@@ -143,4 +149,5 @@ AAoJEK2/F7RvsdD/i+gBANzDELtw/Fwg6JZzHlXDLmnkjt1PjHkbs755zEIEXsCL
 AQDlCwO403z+5mlAzMpx7XYU5hXu1uf+t5YDqSPwA7xMDA==
 =sSaK
 -----END PGP PUBLIC KEY BLOCK-----
+```
 
